@@ -105,7 +105,8 @@ fetch('./centerData.json')
       var keyword = e.target.value;
 
       var result = data.filter((e) => {
-        return e.centerName === keyword;
+        var isContain = e.centerName.includes(keyword) || e.address1.includes(keyword) || e.address2.includes(keyword);                
+        return isContain;
       })
 
       var listGroup = document.querySelector('#placesList');

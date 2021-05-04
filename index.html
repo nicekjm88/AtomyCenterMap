@@ -1,122 +1,133 @@
 <!DOCTYPE html>
 <html lang="ko-KR">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atomy 센터 맵</title>
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-      html, body {
-        padding: 0;
-        margin: 0;
-      }
-      .wrap-infowindow {
-        padding: 5px;
-        margin: 0;
-        min-width: 260px;
-      }
-      .wrap-infowindow ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
-      .wrap-infowindow ul > li {
-        font-size: 14px;
-        letter-spacing: -0.05em;
-      }
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atomy 센터 맵</title>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<div id="map" style="width:100%;height:100vh;"></div>
+<div class="map_wrap">
+  <div id="map"></div>
+  <div id="menu_wrap" class="bg_white">
+      <div class="option">
+          <div>
+              센터명 : <input type="text" value="" placeholder="센터을 정확하게 입력" id="keyword" size="18"> 
+              <!-- <button type="submit">검색하기</button>  -->
+          </div>
+      </div>
+      <hr>
+      <ol id="placesList">
+        <!-- <li>주소 : 대전광역시 유성구 구즉로 61-1</li> -->
+      </ol>
+      <div id="pagination"></div>
+  </div>
+</div>
 
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=clusterer,services"></script>
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services"></script>
 <script>
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+
     mapOption = {
       center: new kakao.maps.LatLng(36.503603, 127.250751), // 지도의 중심좌표
-        level: 10, // 지도의 확대 레벨
-        mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
+      level: 10, // 지도의 확대 레벨
+      mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
     };  
 
 // 지도를 생성합니다    
 var map = new kakao.maps.Map(mapContainer, mapOption); 
 
-// 마커 클러스터러를 생성합니다 
-var clusterer = new kakao.maps.MarkerClusterer({
-    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
-    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
-    minLevel: 10 // 클러스터 할 최소 지도 레벨 
-});
-
 // 주소-좌표 변환 객체를 생성합니다
 var geocoder = new kakao.maps.services.Geocoder();
 
+// 검색기능
+var inputTxt = document.querySelector('#keyword');
+
 fetch('./centerData.json')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data[0].address1)
+  .then((response) => response.json())
+  .then((data) => {
+    
+    var markers = [];
 
-        var markers = [];
+    for ( var i = 0; i < data.length; i++ ) {
 
-        for ( var i = 0; i < data.length; i++ ) {
-          let dataIndex = data[i];
-          // 주소로 좌표를 검색합니다
-          geocoder.addressSearch(dataIndex.address1, function(result, status) {
+      let dataIndex = data[i];
 
-          // 정상적으로 검색이 완료됐으면 
-          if (status === kakao.maps.services.Status.OK) {
+      // 주소로 좌표를 검색합니다
+      geocoder.addressSearch(dataIndex.address1, function(result, status) {
 
-              var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+      // 정상적으로 검색이 완료됐으면 
+      if (status === kakao.maps.services.Status.OK) {
 
-              // 결과값으로 받은 위치를 마커로 표시합니다
-              var marker = new kakao.maps.Marker({
-                  map: map,
-                  position: coords
-              });
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-              // 인포윈도우로 장소에 대한 설명을 표시합니다
-              var infowindow = new kakao.maps.InfoWindow({
-                  content : `<div class="wrap-infowindow">
-                            <ul>
-                              <li>` + dataIndex.centerName + `</li>
-                              <li>` + dataIndex.address1 + `</li>
-                              <li>` + dataIndex.address2 + `</li>
-                            </ul>
-                          </div>` // 인포윈도우에 표시할 내용
-              });
-              //infowindow.open(map, marker);
-              markers.push(marker);
+          // 결과값으로 받은 위치를 마커로 표시합니다
+          var marker = new kakao.maps.Marker({
+              map: map,
+              position: coords
+          });           
 
-              kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-              kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+          // 인포윈도우로 장소에 대한 설명을 표시합니다
+          var infowindow = new kakao.maps.InfoWindow({
+              content : `<div class="wrap-infowindow">
+                        <ul>
+                          <li><strong>` + dataIndex.centerName + `</strong></li>
+                          <li>&middot; ` + dataIndex.address1 + `</li>
+                          <li>&middot; ` + dataIndex.address2 + `</li>
+                        </ul>
+                      </div>` // 인포윈도우에 표시할 내용
+          });
+          markers.push(marker);
 
-              // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-              //map.setCenter(coords);
-          } 
-          }); 
-        }
+          kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+          kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+      } 
+      }); 
+    }
 
-        // 클러스터러에 마커들을 추가합니다
-        clusterer.addMarkers(markers);
+    // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+    function makeOverListener(map, marker, infowindow) {
+        return function() {
+            infowindow.open(map, marker);
+        };
+    }
 
-        // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
-        function makeOverListener(map, marker, infowindow) {
-            return function() {
-                infowindow.open(map, marker);
-            };
-        }
+    // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+    function makeOutListener(infowindow) {
+        return function() {
+            infowindow.close();
+        };
+    }
 
-        // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
-        function makeOutListener(infowindow) {
-            return function() {
-                infowindow.close();
-            };
-        }
+    inputTxt.addEventListener('change', function(e, i) {
 
-      });   
+      var keyword = e.target.value;
+
+      var result = data.filter((e) => {
+        return e.centerName === keyword;
+      })
+
+      var listGroup = document.querySelector('#placesList');
+      var itemStr = '';
+
+      for ( var i = 0; i < result.length; i++ ) {
+        itemStr += '<li>' + result[i].address1 + '</br>' + result[i].address2 + '</li>';
+      }
+
+      listGroup.innerHTML = itemStr;      
+    
+    });
+
+  });
+  
+  /**
+   * 1. 속도 개선 : 데이터가 1300이 넘기 때문에 좀 느리다.
+   * 2. 키워드 검색 개선 : 연관단어를 입력해도 검색되게 개선
+   * 3. 검색결과 리스트를 클릭하면 해당 marker위치로 이동.
+   * 4. 모바일에서도 정상적으로 작동하게 제작
+   */
+  
 </script>
 </body>
 </html>

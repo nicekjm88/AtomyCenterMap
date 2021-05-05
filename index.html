@@ -13,7 +13,7 @@
   <div id="menu_wrap" class="bg_white">
       <div class="option">
           <div>
-              센터명 : <input type="text" value="" placeholder="센터을 정확하게 입력" id="keyword" size="18"> 
+              검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18"> 
               <!-- <button type="submit">검색하기</button>  -->
           </div>
       </div>
@@ -99,22 +99,14 @@ fetch('./centerData.json')
       var itemStr = '';
 
       for ( var i = 0; i < result.length; i++ ) {
-        itemStr += '<li>' + result[i].address1 + '</br>' + result[i].address2 + '</li>';
+        itemStr += '<li><strong>' + result[i].centerName + '</strong>' + result[i].address1 + '</br>' + result[i].address2 + '</li>';
       }
 
       listGroup.innerHTML = itemStr;      
     
     });
 
-  });
-  
-  /**
-   * 1. 속도 개선 : 데이터가 1300이 넘기 때문에 좀 느리다.
-   * 2. 키워드 검색 개선 : 연관단어를 입력해도 검색되게 개선
-   * 3. 검색결과 리스트를 클릭하면 해당 marker위치로 이동.
-   * 4. 모바일에서도 정상적으로 작동하게 제작
-   */
-  
+  });  
 </script>
 </body>
 </html>

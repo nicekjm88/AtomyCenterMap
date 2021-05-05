@@ -98,6 +98,10 @@ body {
   padding-left: 20px;
 }
 
+#placesList li strong {
+  display: block;
+}
+
 #placesList li::before {
   content: counter(number) ". ";
   position: absolute;

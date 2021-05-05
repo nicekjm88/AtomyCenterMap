@@ -38,52 +38,38 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 // 지도를 생성합니다    
 var map = new kakao.maps.Map(mapContainer, mapOption); 
 
-// 주소-좌표 변환 객체를 생성합니다
-var geocoder = new kakao.maps.services.Geocoder();
-
 // 검색기능
 var inputTxt = document.querySelector('#keyword');
 
 fetch('./centerData.json')
   .then((response) => response.json())
-  .then((data) => {
-    
-    var markers = [];
+  .then((data) => {    
 
     for ( var i = 0; i < data.length; i++ ) {
 
-      let dataIndex = data[i];
+      var coords = new kakao.maps.LatLng(data[i].lat, data[i].lng);
 
-      // 주소로 좌표를 검색합니다
-      geocoder.addressSearch(dataIndex.address1, function(result, status) {
+      // 결과값으로 받은 위치를 마커로 표시합니다
+      var marker = new kakao.maps.Marker({
+          map: map,
+          position: coords
+      });           
 
-      // 정상적으로 검색이 완료됐으면 
-      if (status === kakao.maps.services.Status.OK) {
+      // 인포윈도우로 장소에 대한 설명을 표시합니다
+      var infowindow = new kakao.maps.InfoWindow({
+          content : `<div class="wrap-infowindow">
+                    <ul>
+                      <li><strong>` + data[i].centerName + `</strong></li>
+                      <li>&middot; ` + data[i].address1 + `</li>
+                      <li>&middot; ` + data[i].address2 + `</li>
+                    </ul>
+                  </div>` // 인포윈도우에 표시할 내용
+      });
 
-          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+      kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+      kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
 
-          // 결과값으로 받은 위치를 마커로 표시합니다
-          var marker = new kakao.maps.Marker({
-              map: map,
-              position: coords
-          });           
 
-          // 인포윈도우로 장소에 대한 설명을 표시합니다
-          var infowindow = new kakao.maps.InfoWindow({
-              content : `<div class="wrap-infowindow">
-                        <ul>
-                          <li><strong>` + dataIndex.centerName + `</strong></li>
-                          <li>&middot; ` + dataIndex.address1 + `</li>
-                          <li>&middot; ` + dataIndex.address2 + `</li>
-                        </ul>
-                      </div>` // 인포윈도우에 표시할 내용
-          });
-          markers.push(marker);
-
-          kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-          kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
-      } 
-      }); 
     }
 
     // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 

@@ -39,10 +39,13 @@ body {
 }
 
 .map_wrap a,
-.map_wrap a:hover,
 .map_wrap a:active {
   color: #000;
   text-decoration: none;
+}
+
+.map_wrap a:hover {
+  text-decoration: underline
 }
 
 .map_wrap {

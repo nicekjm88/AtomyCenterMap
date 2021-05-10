@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko-KR">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Atomy 센터 맵</title>
-  <link rel="stylesheet" href="./style.css">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atomy 센터 맵</title>
+<link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
-  <div class="map_wrap">
-    <div id="map"></div>
-    <div id="menu_wrap" class="bg_white">
+<div class="map_wrap">
+  <div id="map"></div>
+  <div id="menu_wrap" class="bg_white">
       <div class="option">
-        <div>
-          검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18">
-        </div>
+          <div>
+              검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18"> 
+          </div>
       </div>
       <hr>
       <ol id="placesList"></ol>
-    </div>
   </div>
+</div>
 
-  <script type="text/javascript"
-    src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services"></script>
-  <script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services"></script>
+<script type="text/javascript" src="script.js"></script>
 </body>
-
 </html>

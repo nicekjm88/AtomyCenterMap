@@ -1,6 +1,6 @@
-const spinner = document.getElementById("spinner");
+var spinner = document.getElementById("spinner");
 
-const mapContainer = document.getElementById("map"), // 지도를 표시할 div
+var mapContainer = document.getElementById("map"), // 지도를 표시할 div
   mapOption = {
     center: new kakao.maps.LatLng(36.503603, 127.250751), // 지도의 중심좌표
     level: 12, // 지도의 확대 레벨
@@ -8,25 +8,25 @@ const mapContainer = document.getElementById("map"), // 지도를 표시할 div
   };
 
 // 지도를 생성합니다
-const map = new kakao.maps.Map(mapContainer, mapOption);
+var map = new kakao.maps.Map(mapContainer, mapOption);
 
 // 마커 클러스터러를 생성합니다
-const clusterer = new kakao.maps.MarkerClusterer({
+var clusterer = new kakao.maps.MarkerClusterer({
   map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
   averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
   minLevel: 8, // 클러스터 할 최소 지도 레벨
 });
 
 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-const zoomControl = new kakao.maps.ZoomControl();
+var zoomControl = new kakao.maps.ZoomControl();
 map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
 // 검색기능
-const inputTxt = document.querySelector("#keyword");
+var inputTxt = document.querySelector("#keyword");
 
 function panTo(lat, lng, centerName, address1, address2) {
   // 이동할 위도 경도 위치를 생성합니다
-  const moveLatLon = new kakao.maps.LatLng(lat, lng);
+  var moveLatLon = new kakao.maps.LatLng(lat, lng);
 
   map.setLevel(4);
 
@@ -34,17 +34,17 @@ function panTo(lat, lng, centerName, address1, address2) {
   // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
   map.panTo(moveLatLon);
 
-  const content = `<div class="overlay_info">
+  var content = `<div class="overlay_info">
                   <p class="title">센터명 : <strong>${centerName}</strong></p>
                   <div class="desc">
                     <span class="address">${address1}&nbsp;${address2}</span>
                   </div>
                 </div>`;
 
-  const position = moveLatLon;
+  var position = moveLatLon;
 
   // 커스텀 오버레이를 생성합니다
-  const mapCustomOverlay = new kakao.maps.CustomOverlay({
+  var mapCustomOverlay = new kakao.maps.CustomOverlay({
     position: position,
     content: content,
     xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
@@ -56,7 +56,7 @@ function panTo(lat, lng, centerName, address1, address2) {
 
   kakao.maps.event.addListener(map, "zoom_changed", function () {
     // 지도의 현재 레벨을 얻어옵니다
-    const level = map.getLevel();
+    var level = map.getLevel();
 
     if (level > 4) {
       mapCustomOverlay.setMap(null);
@@ -72,16 +72,16 @@ async function loadData() {
     .then((response) => response.json())
     .then((data) => {
       spinner.setAttribute("hidden", "");
-      const markers = $(data).map(function (i, data) {
-        const coords = new kakao.maps.LatLng(data.lat, data.lng);
+      var markers = $(data).map(function (i, data) {
+        var coords = new kakao.maps.LatLng(data.lat, data.lng);
 
-        const marker = new kakao.maps.Marker({
+        var marker = new kakao.maps.Marker({
           map: map,
           position: coords,
         });
 
         // 인포윈도우로 장소에 대한 설명을 표시합니다
-        const infowindow = new kakao.maps.InfoWindow({
+        var infowindow = new kakao.maps.InfoWindow({
           content: `<div class="wrap-infowindow">
                       <strong>${data.centerName}</strong>
                       <ul>
@@ -126,18 +126,18 @@ async function loadData() {
       }
 
       inputTxt.addEventListener("change", function (e, i) {
-        const keyword = e.target.value;
+        var keyword = e.target.value;
 
-        const result = data.filter((e) => {
-          const isContain =
+        var result = data.filter((e) => {
+          var isContain =
             e.centerName.includes(keyword) ||
             e.address1.includes(keyword) ||
             e.address2.includes(keyword);
           return isContain;
         });
 
-        const listGroup = document.querySelector("#placesList");
-        const itemStr = "";
+        var listGroup = document.querySelector("#placesList");
+        var itemStr = "";
 
         for (let i = 0; i < result.length; i++) {
           itemStr += `<li>

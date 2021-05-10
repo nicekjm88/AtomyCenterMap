@@ -1,12 +1,21 @@
+const spinner = document.getElementById("spinner");
+
 var mapContainer = document.getElementById("map"), // 지도를 표시할 div
   mapOption = {
     center: new kakao.maps.LatLng(36.503603, 127.250751), // 지도의 중심좌표
-    level: 10, // 지도의 확대 레벨
+    level: 12, // 지도의 확대 레벨
     mapTypeId: kakao.maps.MapTypeId.ROADMAP, // 지도종류
   };
 
 // 지도를 생성합니다
 var map = new kakao.maps.Map(mapContainer, mapOption);
+
+// 마커 클러스터러를 생성합니다
+var clusterer = new kakao.maps.MarkerClusterer({
+  map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+  averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+  minLevel: 8, // 클러스터 할 최소 지도 레벨
+});
 
 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
 var zoomControl = new kakao.maps.ZoomControl();
@@ -57,78 +66,91 @@ function panTo(lat, lng, centerName, address1, address2) {
   });
 }
 
-fetch("./centerData.json")
-  .then((response) => response.json())
-  .then((data) => {
-    for (var i = 0; i < data.length; i++) {
-      var coords = new kakao.maps.LatLng(data[i].lat, data[i].lng);
+async function loadData() {
+  spinner.removeAttribute("hidden");
+  await fetch("./centerData.json")
+    .then((response) => response.json())
+    .then((data) => {
+      spinner.setAttribute("hidden", "");
+      var markers = $(data).map(function (i, data) {
+        var coords = new kakao.maps.LatLng(data.lat, data.lng);
 
-      // 결과값으로 받은 위치를 마커로 표시합니다
-      var marker = new kakao.maps.Marker({
-        map: map,
-        position: coords,
-      });
+        var marker = new kakao.maps.Marker({
+          map: map,
+          position: coords,
+        });
 
-      // 인포윈도우로 장소에 대한 설명을 표시합니다
-      var infowindow = new kakao.maps.InfoWindow({
-        content: `<div class="wrap-infowindow">
-                      <strong>${data[i].centerName}</strong>
+        // 인포윈도우로 장소에 대한 설명을 표시합니다
+        var infowindow = new kakao.maps.InfoWindow({
+          content: `<div class="wrap-infowindow">
+                      <strong>${data.centerName}</strong>
                       <ul>
-                        <li>${data[i].address1}</li>
-                        <li>${data[i].address2}</li>
+                        <li>${data.address1}</li>
+                        <li>${data.address2}</li>
                       </ul>
                     </div>`, // 인포윈도우에 표시할 내용
+        });
+
+        kakao.maps.event.addListener(
+          marker,
+          "mouseover",
+          makeOverListener(map, marker, infowindow)
+        );
+
+        kakao.maps.event.addListener(
+          marker,
+          "mouseout",
+          makeOutListener(infowindow)
+        );
+
+        return marker;
       });
 
-      kakao.maps.event.addListener(
-        marker,
-        "mouseover",
-        makeOverListener(map, marker, infowindow)
-      );
-      kakao.maps.event.addListener(
-        marker,
-        "mouseout",
-        makeOutListener(infowindow)
-      );
-    }
+      // 클러스터러에 마커들을 추가합니다
+      clusterer.addMarkers(markers);
 
-    // 인포윈도우를 표시하는 클로저를 만드는 함수입니다
-    function makeOverListener(map, marker, infowindow) {
-      return function () {
-        infowindow.open(map, marker);
-      };
-    }
+      for (var i = 0; i < data.length; i++) {}
 
-    // 인포윈도우를 닫는 클로저를 만드는 함수입니다
-    function makeOutListener(infowindow) {
-      return function () {
-        infowindow.close();
-      };
-    }
+      // 인포윈도우를 표시하는 클로저를 만드는 함수입니다
+      function makeOverListener(map, marker, infowindow) {
+        return function () {
+          infowindow.open(map, marker);
+        };
+      }
 
-    inputTxt.addEventListener("change", function (e, i) {
-      var keyword = e.target.value;
+      // 인포윈도우를 닫는 클로저를 만드는 함수입니다
+      function makeOutListener(infowindow) {
+        return function () {
+          infowindow.close();
+        };
+      }
 
-      var result = data.filter((e) => {
-        var isContain =
-          e.centerName.includes(keyword) ||
-          e.address1.includes(keyword) ||
-          e.address2.includes(keyword);
-        return isContain;
-      });
+      inputTxt.addEventListener("change", function (e, i) {
+        var keyword = e.target.value;
 
-      var listGroup = document.querySelector("#placesList");
-      var itemStr = "";
+        var result = data.filter((e) => {
+          var isContain =
+            e.centerName.includes(keyword) ||
+            e.address1.includes(keyword) ||
+            e.address2.includes(keyword);
+          return isContain;
+        });
 
-      for (var i = 0; i < result.length; i++) {
-        itemStr += `<li>
+        var listGroup = document.querySelector("#placesList");
+        var itemStr = "";
+
+        for (var i = 0; i < result.length; i++) {
+          itemStr += `<li>
                       <a href="#" onclick="panTo(${result[i].lat},${result[i].lng},'${result[i].centerName}','${result[i].address1}','${result[i].address2}')">
                         <strong>${result[i].centerName}</strong>
                         <address>${result[i].address1}&nbsp;${result[i].address2}</address>
                       </a>
                     </li>`;
-      }
+        }
 
-      listGroup.innerHTML = itemStr;
+        listGroup.innerHTML = itemStr;
+      });
     });
-  });
+}
+
+loadData();

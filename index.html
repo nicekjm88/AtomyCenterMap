@@ -1,130 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko-KR">
+
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atomy 센터 맵</title>
-<link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atomy 센터 맵</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-<div class="map_wrap">
-  <div id="map"></div>
-  <div id="menu_wrap" class="bg_white">
+  <div class="map_wrap">
+    <div id="map"></div>
+    <div id="menu_wrap" class="bg_white">
       <div class="option">
-          <div>
-              검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18"> 
-              <!-- <button type="submit">검색하기</button>  -->
-          </div>
+        <div>
+          검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18">
+        </div>
       </div>
       <hr>
-      <ol id="placesList">
-        <!-- <li>주소 : 대전광역시 유성구 구즉로 61-1</li> -->
-      </ol>
-      <div id="pagination"></div>
+      <ol id="placesList"></ol>
+    </div>
   </div>
-</div>
 
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services"></script>
-<script>
-var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-
-    mapOption = {
-      center: new kakao.maps.LatLng(36.503603, 127.250751), // 지도의 중심좌표
-      level: 10, // 지도의 확대 레벨
-      mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
-    };  
-
-// 지도를 생성합니다    
-var map = new kakao.maps.Map(mapContainer, mapOption); 
-
-// 검색기능
-var inputTxt = document.querySelector('#keyword');
-
-function panTo(lat, lng) {
-  
-  // 이동할 위도 경도 위치를 생성합니다 
-  var moveLatLon = new kakao.maps.LatLng(lat, lng);
-
-  map.setLevel(4);
-
-  // 지도 중심을 부드럽게 이동시킵니다
-  // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
-  map.panTo(moveLatLon);  
-  
-} 
-
-
-
-fetch('./centerData.json')
-  .then((response) => response.json())
-  .then((data) => {    
-
-    for ( var i = 0; i < data.length; i++ ) {
-
-      var coords = new kakao.maps.LatLng(data[i].lat, data[i].lng);
-
-      // 결과값으로 받은 위치를 마커로 표시합니다
-      var marker = new kakao.maps.Marker({
-          map: map,
-          position: coords
-      });           
-
-      // 인포윈도우로 장소에 대한 설명을 표시합니다
-      var infowindow = new kakao.maps.InfoWindow({
-          content : `<div class="wrap-infowindow">
-                    <ul>
-                      <li><strong>` + data[i].centerName + `</strong></li>
-                      <li>&middot; ` + data[i].address1 + `</li>
-                      <li>&middot; ` + data[i].address2 + `</li>
-                    </ul>
-                  </div>` // 인포윈도우에 표시할 내용
-      });
-
-      kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-      kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
-     
-    }
-
-    // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
-    function makeOverListener(map, marker, infowindow) {
-
-        return function() {
-            infowindow.open(map, marker);
-        };
-    }
-
-    // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
-    function makeOutListener(infowindow) {
-        return function() {
-            infowindow.close();
-        };
-    }
-
-    inputTxt.addEventListener('change', function(e, i) {
-
-      var keyword = e.target.value;
-
-      var result = data.filter((e) => {
-        var isContain = e.centerName.includes(keyword) || e.address1.includes(keyword) || e.address2.includes(keyword);                
-        return isContain;
-      })
-
-      var listGroup = document.querySelector('#placesList');
-      var itemStr = '';
-
-      for ( var i = 0; i < result.length; i++ ) {
-        
-        itemStr += '<li><a href="#" onclick="panTo(' + result[i].lat + ',' + result[i].lng + ')"><strong>' + result[i].centerName + '</strong>' + result[i].address1 + '</br>' + result[i].address2 + '</a></li>';
-      }
-
-      listGroup.innerHTML = itemStr;      
-    
-    });
-
-    
-
-}); 
-</script>
+  <script type="text/javascript"
+    src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services"></script>
+  <script type="text/javascript" src="script.js"></script>
 </body>
+
 </html>

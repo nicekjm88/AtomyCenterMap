@@ -1,7 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
 html,
 body {
   padding: 0;
@@ -14,6 +10,12 @@ body {
   min-width: 280px;
 }
 
+.wrap-infowindow strong {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
 .wrap-infowindow ul {
   list-style-type: none;
   padding: 0;
@@ -23,6 +25,10 @@ body {
 .wrap-infowindow ul>li {
   font-size: 14px;
   letter-spacing: -0.05em;
+}
+
+.wrap-infowindow ul>li::before {
+  content: '- ';
 }
 
 .wrap-infowindow ul>li strong {
@@ -93,7 +99,7 @@ body {
   margin-left: 5px;
 }
 
-#placesList li {
+#placesList>li {
   list-style: none;
   padding: 5px;
   counter-increment: number;
@@ -101,17 +107,22 @@ body {
   padding-left: 20px;
 }
 
-#placesList li strong {
+#placesList>li strong {
   display: block;
+  margin-bottom: 2px;
 }
 
-#placesList li::before {
+#placesList>li::before {
   content: counter(number) ". ";
   position: absolute;
   top: 5px;
   left: 0;
   width: 15px;
   text-align: right;
+}
+
+#placesList>li address {
+  font-style: normal;
 }
 
 #placesList .item {
@@ -241,4 +252,55 @@ body {
   height: 100vh;
   position: relative;
   overflow: hidden;
+}
+
+.overlay_info {
+  border-radius: 6px;
+  margin-bottom: 12px;
+  float: left;
+  position: relative;
+  border: 1px solid #ccc;
+  border-bottom: 2px solid #ddd;
+  background-color: #fff;
+}
+
+.overlay_info:nth-of-type(n) {
+  border: 0;
+  box-shadow: 0px 1px 2px #888;
+}
+
+.overlay_info .title {
+  display: block;
+  background: rgb(0 181 239);
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 36px 12px 14px;
+  border-radius: 6px 6px 0 0
+}
+
+.overlay_info .desc {
+  padding: 14px;
+  position: relative;
+  width: 190px;
+}
+
+.overlay_info img {
+  vertical-align: top;
+}
+
+.overlay_info .address {
+  font-size: 12px;
+  color: #333;
+  white-space: normal
+}
+
+.overlay_info:after {
+  content: '';
+  position: absolute;
+  margin-left: -11px;
+  left: 50%;
+  bottom: -12px;
+  width: 22px;
+  height: 12px;
+  background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png) no-repeat 0 bottom;
 }

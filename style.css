@@ -328,7 +328,7 @@ body {
   }
   
   #placesList {
-    height: 220px;
+    max-height: 220px;
     overflow: auto;
   }
 }

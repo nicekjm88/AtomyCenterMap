@@ -36,6 +36,11 @@ body {
   margin-bottom: 5px;
 }
 
+.nodata {
+  margin-top: 10px !important;
+  text-align: center;
+}
+
 .map_wrap,
 .map_wrap * {
   margin: 0;
@@ -94,7 +99,9 @@ body {
 #menu_wrap .option p {
   margin: 10px 0;
 }
-
+#menu_wrap .option input[type="text"] {
+  padding-left: 5px;
+}
 #menu_wrap .option button {
   margin-left: 5px;
 }
@@ -104,7 +111,7 @@ body {
   padding: 5px;
   counter-increment: number;
   position: relative;
-  padding-left: 20px;
+  padding-left: 25px;
 }
 
 #placesList>li strong {
@@ -117,7 +124,7 @@ body {
   position: absolute;
   top: 5px;
   left: 0;
-  width: 15px;
+  width: 20px;
   text-align: right;
 }
 

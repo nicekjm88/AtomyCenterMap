@@ -1,30 +1,52 @@
 <!DOCTYPE html>
 <html lang="ko-KR">
+
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atomy 센터 맵</title>
-<link rel="stylesheet" href="./style.css">
-<link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon.png"/>
-<link href="./favicon.ico" rel="shortcut icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>애터미교육센터</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon.png" />
+    <link href="./favicon.ico" rel="shortcut icon">
 </head>
+
 <body>
-<div class="map_wrap">
-  <div id="map"></div>
-  <div id="menu_wrap" class="bg_white">
-      <div class="option">
-          <div>
-              검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18"> 
-          </div>
-      </div>
-      <hr>
-      <ol id="placesList"></ol>
-  </div>
-</div>
-<div hidden id="spinner"></div>
-<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services,clusterer"></script>
-<script type="text/javascript" src="script.js"></script>
+    <div class="map_wrap">
+        <div id="map"></div>
+        <div id="menu_wrap" class="bg_white">
+            <div class="option">
+                <div>
+                    검색 : <input type="text" value="" placeholder="키워드 검색" id="keyword" size="18">
+                </div>
+            </div>
+            <hr>
+            <ol id="placesList"></ol>
+        </div>
+    </div>
+    <div hidden id="spinner"></div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript"
+        src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=9d8db804e25748be27d2b3c271de3292&libraries=services,clusterer"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-analytics.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyCsElv3668YohwfGI2_wmOhs0-_sMvUVcA",
+            authDomain: "atomy-kr-education-center.firebaseapp.com",
+            projectId: "atomy-kr-education-center",
+            storageBucket: "atomy-kr-education-center.appspot.com",
+            messagingSenderId: "564770501369",
+            appId: "1:564770501369:web:c6b804f649af2ec0a46828",
+            measurementId: "G-KDJMRR3CQ2"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
 </body>
+
 </html>
